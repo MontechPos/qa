@@ -299,7 +299,7 @@
             fetch('https://ifconfig.me/ip')
                 .then(response => response.text())
                 .then(ip => {
-                    document.getElementById('ipInfo').innerHTML = `<h1><strong>Thông tin IP WAN</strong>: <span style="color: red;">${ip}</span></h1>`;
+                    document.getElementById('ipInfo').innerHTML = `<h1><strong>THÔNG TIN IP</strong>: <span style="color: red;">${ip}</span></h1>`;
                 })
                 .catch(error => {
                     console.error('Lỗi khi lấy thông tin IP:', error);
