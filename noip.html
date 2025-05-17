@@ -36,13 +36,16 @@
             const auth = btoa(`${username}:${password}`);
 
             // Xây dựng URL cập nhật
-            let url = `https://dynupdate.no-ip.com/nic/update?hostname=${hostname}`;
+            let targetUrl = `https://dynupdate.no-ip.com/nic/update?hostname=${hostname}`;
             if (ip) {
-                url += `&myip=${ip}`;
+                targetUrl += `&myip=${ip}`;
             }
 
+            // Sử dụng proxy để bypass CORS
+            const proxyUrl = `https://cors.lol/${targetUrl}`;
+
             try {
-                const response = await fetch(url, {
+                const response = await fetch(proxyUrl, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Basic ${auth}`,
