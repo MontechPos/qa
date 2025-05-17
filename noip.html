@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update No-IP DDNS</title>
+</head>
+<body>
+    <h1>Cập nhật IP cho No-IP DDNS</h1>
+    <form id="ddnsForm">
+        <label for="hostname">Hostname (DDNS):</label>
+        <input type="text" id="hostname" name="hostname" required placeholder="e.g., myhome.noip.com"><br><br>
+
+        <label for="username">Username (USER):</label>
+        <input type="text" id="username" name="username" required placeholder="Tên đăng nhập No-IP"><br><br>
+
+        <label for="password">Password (PASS):</label>
+        <input type="password" id="password" name="password" required placeholder="Mật khẩu hoặc DDNS Key"><br><br>
+
+        <label for="ip">IP WAN (tùy chọn):</label>
+        <input type="text" id="ip" name="ip" placeholder="Để trống để dùng IP hiện tại"><br><br>
+
+        <button type="button" onclick="updateDDNS()">Cập nhật IP</button>
+    </form>
+    <p id="status"></p>
+
+    <script>
+        async function updateDDNS() {
+            const hostname = document.getElementById('hostname').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const ip = document.getElementById('ip').value;
+            const userAgent = 'Custom DDNS Updater/1.0';
+
+            // Tạo chuỗi xác thực Basic Auth
+            const auth = btoa(`${username}:${password}`);
+
+            // Xây dựng URL cập nhật
+            let url = `https://dynupdate.no-ip.com/nic/update?hostname=${hostname}`;
+            if (ip) {
+                url += `&myip=${ip}`;
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Basic ${auth}`,
+                        'User-Agent': userAgent
+                    }
+                });
+
+                const text = await response.text();
+                document.getElementById('status').innerText = `Kết quả: ${text}`;
+            } catch (error) {
+                document.getElementById('status').innerText = `Lỗi: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
