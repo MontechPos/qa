@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>Cập nhật IP cho No-IP DDNS</h1>
-    <form id="ddnsForm">
+    <form id="ddnsForm" method="GET" target="_blank">
         <label for="hostname">Hostname (DDNS):</label>
         <input type="text" id="hostname" name="hostname" required placeholder="e.g., myhome.noip.com"><br><br>
 
@@ -20,44 +20,25 @@
         <label for="ip">IP WAN (tùy chọn):</label>
         <input type="text" id="ip" name="ip" placeholder="Để trống để dùng IP hiện tại"><br><br>
 
-        <button type="button" onclick="updateDDNS()">Cập nhật IP</button>
+        <button type="button" onclick="submitForm()">Cập nhật IP</button>
     </form>
     <p id="status"></p>
 
     <script>
-        async function updateDDNS() {
+        function submitForm() {
             const hostname = document.getElementById('hostname').value;
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const ip = document.getElementById('ip').value;
-            const userAgent = 'Custom DDNS Updater/1.0';
 
-            // Tạo chuỗi xác thực Basic Auth
-            const auth = btoa(`${username}:${password}`);
-
-            // Xây dựng URL cập nhật
-            let targetUrl = `https://dynupdate.no-ip.com/nic/update?hostname=${hostname}`;
+            let url = `https://${encodeURIComponent(username)}:${encodeURIComponent(password)}@dynupdate.no-ip.com/nic/update?hostname=${encodeURIComponent(hostname)}`;
             if (ip) {
-                targetUrl += `&myip=${ip}`;
+                url += `&myip=${encodeURIComponent(ip)}`;
             }
 
-            // Sử dụng proxy để bypass CORS
-            const proxyUrl = `https://cors.lol/${targetUrl}`;
-
-            try {
-                const response = await fetch(proxyUrl, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Basic ${auth}`,
-                        'User-Agent': userAgent
-                    }
-                });
-
-                const text = await response.text();
-                document.getElementById('status').innerText = `Kết quả: ${text}`;
-            } catch (error) {
-                document.getElementById('status').innerText = `Lỗi: ${error.message}`;
-            }
+            const form = document.getElementById('ddnsForm');
+            form.action = url;
+            form.submit();
         }
     </script>
 </body>
